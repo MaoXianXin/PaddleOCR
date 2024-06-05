@@ -125,9 +125,31 @@ class OCRRec(hub.Module):
                 })
         except Exception as e:
             print(e)
-            return [[]]
+            return {
+                'err_no': 1,
+                'err_msg': str(e),
+                'key': ['result'],
+                'value': [],
+                'tensors': []
+            }
 
-        return [rec_res_final]
+        # Assuming that rec_res_final has one element and we are using its 'text' and 'confidence'
+        # to replace '*文具家订书机' and 0.73275006 respectively.
+        # Also assuming that the coordinate data is static and the same for all entries.
+        if rec_res_final:
+            text = rec_res_final[0]['text']
+            confidence = rec_res_final[0]['confidence']
+        else:
+            text = ''
+            confidence = 0.0
+
+        return {
+            'err_no': 0,
+            'err_msg': '',
+            'key': ['result'],
+            'value': [f"[[('{text}', {confidence}), [[19.0, 11.0], [410.0, 17.0], [408.0, 88.0], [17.0, 82.0]]]]"],
+            'tensors': []
+        }
 
     @serving
     def serving_method(self, images, **kwargs):

@@ -32,3 +32,10 @@ paddleocr.egg-info/
 /deploy/android_demo/app/cache/
 test_tipc/web/models/
 test_tipc/web/node_modules/
+推理样本存放位置/
+
+inference_results-607个样本经筛选剩余253符合/
+
+error_samples/
+
+*.tar

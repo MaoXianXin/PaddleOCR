@@ -17,6 +17,7 @@ import requests
 import json
 import base64
 import os
+import time  # 导入time模块
 
 import argparse
 
@@ -27,7 +28,7 @@ def str2bool(v):
 
 parser = argparse.ArgumentParser(description="args for paddleserving")
 parser.add_argument("--image_dir", type=str, default="../../doc/imgs/")
-parser.add_argument("--det", type=str2bool, default=True)
+parser.add_argument("--det", type=str2bool, default=False)
 parser.add_argument("--rec", type=str2bool, default=True)
 args = parser.parse_args()
 
@@ -41,7 +42,8 @@ def _check_image_file(path):
     return any([path.lower().endswith(e) for e in img_end])
 
 
-url = "http://127.0.0.1:9998/ocr/prediction"
+url = "http://192.168.52.29:9997/ocr/prediction"
+# url = "http://192.168.30.218:9997/ocr/prediction"
 test_img_dir = args.image_dir
 
 test_img_list = []
@@ -55,6 +57,8 @@ elif os.path.isdir(test_img_dir):
 if len(test_img_list) == 0:
     raise Exception("not found any img file in {}".format(test_img_dir))
 
+total_time = 0  # 初始化总时间为0
+
 for idx, img_file in enumerate(test_img_list):
     with open(img_file, 'rb') as file:
         image_data1 = file.read()
@@ -64,7 +68,14 @@ for idx, img_file in enumerate(test_img_list):
     image = cv2_to_base64(image_data1)
 
     data = {"key": ["image"], "value": [image]}
+    
+    start_time = time.time()  # 记录开始时间
     r = requests.post(url=url, data=json.dumps(data))
+    end_time = time.time()  # 记录结束时间
+    
+    elapsed_time = end_time - start_time  # 计算耗时
+    total_time += elapsed_time  # 累加总时间
+    
     result = r.json()
     print("erro_no:{}, err_msg:{}".format(result["err_no"], result["err_msg"]))
     # check success
@@ -86,4 +97,8 @@ for idx, img_file in enumerate(test_img_list):
         print(
             "For details about error message, see PipelineServingLogs/pipeline.log"
         )
+    
+    print("Elapsed time: {:.2f} seconds".format(elapsed_time))  # 打印每张图片的处理时间
+
 print("==> total number of test imgs: ", len(test_img_list))
+print("Total elapsed time: {:.2f} seconds".format(total_time))  # 打印总耗时

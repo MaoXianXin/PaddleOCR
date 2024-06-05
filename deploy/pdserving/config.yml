@@ -2,7 +2,7 @@
 rpc_port: 18091
 
 #http端口, rpc_port和http_port不允许同时为空。当rpc_port可用且http_port为空时，不自动生成http_port
-http_port: 9998
+http_port: 12353
 
 #worker_num, 最大并发数。当build_dag_each_worker=True时, 框架会创建worker_num个进程，每个进程内构建grpcSever和DAG
 ##当build_dag_each_worker=False时，框架会设置主线程grpc线程池的max_workers=worker_num
@@ -13,13 +13,13 @@ build_dag_each_worker: False
 
 dag:
     #op资源类型, True, 为线程模型；False，为进程模型
-    is_thread_op: False
+    is_thread_op: True
 
     #重试次数
     retry: 10
 
     #使用性能分析, True，生成Timeline性能数据，对性能有一定影响；False为不使用
-    use_profile: True
+    use_profile: False
     
     tracer:
         interval_s: 10
@@ -34,7 +34,7 @@ op:
             client_type: local_predictor
 
             #det模型路径
-            model_config: ./ppocr_det_v3_serving
+            model_config: ./ppocr_det_v4_serving
 
             #Fetch结果列表，以client_config中fetch_var的alias_name为准，不设置默认取全部输出变量
             #fetch_list: ["sigmoid_0.tmp_0"]
@@ -60,7 +60,7 @@ op:
             client_type: local_predictor
 
             #rec模型路径
-            model_config: ./ppocr_rec_v3_serving
+            model_config: ./ppocr_rec_v4_serving
 
             #Fetch结果列表，以client_config中fetch_var的alias_name为准, 不设置默认取全部输出变量
             #fetch_list: 

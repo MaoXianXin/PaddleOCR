@@ -2,10 +2,10 @@ Global:
   debug: false
   use_gpu: true
   epoch_num: 200
-  log_smooth_window: 20
-  print_batch_step: 10
+  log_smooth_window: 100
+  print_batch_step: 100
   save_model_dir: ./output/rec_ppocr_v4_hgnet
-  save_epoch_step: 10
+  save_epoch_step: 100
   eval_batch_step: [0, 2000]
   cal_metric_during_train: true
   pretrained_model:
@@ -27,8 +27,8 @@ Optimizer:
   beta2: 0.999
   lr:
     name: Cosine
-    learning_rate: 0.001
-    warmup_epoch: 5
+    learning_rate: 0.0001
+    warmup_epoch: 10
   regularizer:
     name: L2
     factor: 3.0e-05
@@ -74,10 +74,10 @@ Train:
   dataset:
     name: MultiScaleDataSet
     ds_width: false
-    data_dir: ./train_data/
+    data_dir: ./train_data/rec/出票人账号/
     ext_op_transform_idx: 1
     label_file_list:
-    - ./train_data/train_list.txt
+    - ./train_data/rec/出票人账号/rec_train.txt
     transforms:
     - DecodeImage:
         img_mode: BGR
@@ -100,7 +100,7 @@ Train:
   sampler:
     name: MultiScaleSampler
     scales: [[320, 32], [320, 48], [320, 64]]
-    first_bs: &bs 128
+    first_bs: &bs 64
     fix_bs: false
     divided_factor: [8, 16] # w, h
     is_training: True
@@ -112,9 +112,9 @@ Train:
 Eval:
   dataset:
     name: SimpleDataSet
-    data_dir: ./train_data
+    data_dir: ./train_data/rec/出票人账号/
     label_file_list:
-    - ./train_data/val_list.txt
+    - ./train_data/rec/出票人账号/rec_train.txt
     transforms:
     - DecodeImage:
         img_mode: BGR
@@ -133,5 +133,5 @@ Eval:
   loader:
     shuffle: false
     drop_last: false
-    batch_size_per_card: 128
+    batch_size_per_card: 1
     num_workers: 4
