@@ -25,7 +25,7 @@ for dir in $directories; do
         python3 tools/infer_rec.py \
           -c configs/rec/PP-OCRv4/ch_PP-OCRv4_rec_hgnet.yml \
           -o Global.infer_img="$BASE_DIR/$dir" \
-             Global.pretrained_model="./output/rec_ppocr_v4_hgnet-20240527-bestNow/latest"
+             Global.pretrained_model="./output/rec_ppocr_v4_hgnet/latest"
 
         # 计算准确率并捕获输出
         output=$(python3 ocr_accuracy_calculator.py)

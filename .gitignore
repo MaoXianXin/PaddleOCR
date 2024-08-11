@@ -39,3 +39,5 @@ inference_results-607个样本经筛选剩余253符合/
 error_samples/
 
 *.tar
+
+test_data/

@@ -74,10 +74,10 @@ Train:
   dataset:
     name: MultiScaleDataSet
     ds_width: false
-    data_dir: ./train_data/rec/出票人账号/
+    data_dir: ./train_data/rec/训练样本汇总
     ext_op_transform_idx: 1
     label_file_list:
-    - ./train_data/rec/出票人账号/rec_train.txt
+    - ./train_data/rec/训练样本汇总/generated_sub_imgs.txt
     transforms:
     - DecodeImage:
         img_mode: BGR
@@ -112,9 +112,9 @@ Train:
 Eval:
   dataset:
     name: SimpleDataSet
-    data_dir: ./train_data/rec/出票人账号/
+    data_dir: ./train_data/rec/训练样本汇总
     label_file_list:
-    - ./train_data/rec/出票人账号/rec_train.txt
+    - ./train_data/rec/训练样本汇总/generated_sub_imgs.txt
     transforms:
     - DecodeImage:
         img_mode: BGR

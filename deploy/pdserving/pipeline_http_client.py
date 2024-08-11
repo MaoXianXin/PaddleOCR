@@ -42,8 +42,7 @@ def _check_image_file(path):
     return any([path.lower().endswith(e) for e in img_end])
 
 
-url = "http://192.168.52.29:9997/ocr/prediction"
-# url = "http://192.168.30.218:9997/ocr/prediction"
+url = "http://127.0.0.1:9998/ocr/prediction"
 test_img_dir = args.image_dir
 
 test_img_list = []

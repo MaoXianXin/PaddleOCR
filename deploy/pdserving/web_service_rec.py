@@ -63,15 +63,13 @@ class RecOp(Op):
                 rec_batch_res = self.ocr_reader.postprocess(
                     fetch_data, with_score=True)
                 for res in rec_batch_res:
-                    # Assuming res[0] is the recognized text and res[1] is the score
-                    res_list.append([(res[0], res[1]), [[3.0, 8.0], [815.0, 12.0], [815.0, 96.0], [3.0, 92.0]]])
+                    res_list.append(res[0])
         elif isinstance(fetch_data, list):
             for one_batch in fetch_data:
                 one_batch_res = self.ocr_reader.postprocess(
                     one_batch, with_score=True)
                 for res in one_batch_res:
-                    # Assuming res[0] is the recognized text and res[1] is the score
-                    res_list.append([(res[0], res[1]), [[3.0, 8.0], [815.0, 12.0], [815.0, 96.0], [3.0, 92.0]]])
+                    res_list.append(res[0])
 
         res = {"res": str(res_list)}
         return res, None, ""
