@@ -1,48 +1,44 @@
 import random
 
-# 我们使用random模块来生成随机的子串长度和起始位置
-INPUT_FILE = "/home/mao/workspace/PaddleOCR/test_data/corpus_MRZ.txt"  # 输入文件名
-OUTPUT_FILE = "/home/mao/workspace/PaddleOCR/test_data/split_corpus.txt"  # 输出文件名
-STRING_LENGTH = 44  # 每个字符串的预期长度
-MIN_SUBSTRING_LENGTH = 15  # 最小子串长度
-MAX_SUBSTRING_LENGTH = 24  # 最大子串长度
-
-def get_random_substrings(string, existing_substrings):
-    """
-    从给定的字符串中随机提取子串，并确保不重复
-    """
+def split_string(input_string, min_len=5, max_len=10):
     substrings = []
-    remaining = string
-    while len(remaining) >= MIN_SUBSTRING_LENGTH:  # 确保剩余字符串足够长
-        length = random.randint(MIN_SUBSTRING_LENGTH, min(MAX_SUBSTRING_LENGTH, len(remaining)))
-        substring = remaining[:length]
-        remaining = remaining[length:]
-        if substring not in existing_substrings:
+    remaining_string = input_string.strip()  # 去掉字符串首尾的空白字符
+    
+    while len(remaining_string) >= min_len:
+        length = random.randint(min_len, min(max_len, len(remaining_string)))
+        substring = remaining_string[:length].strip()  # 去掉子串首尾的空白字符
+        
+        if substring not in substrings:
             substrings.append(substring)
-            existing_substrings.add(substring)
+        
+        remaining_string = remaining_string[length:].strip()  # 去掉剩余字符串首尾的空白字符
+    
+    if remaining_string and remaining_string not in substrings:
+        substrings.append(remaining_string)
+    
     return substrings
 
-def main():
-    existing_substrings = set()  # 用于跟踪已写入的子串
-
-    # 读取文件内容并进行shuffle
-    with open(INPUT_FILE, 'r') as infile:
-        lines = infile.readlines()
+def process_file(input_filename, output_filename, min_len=5, max_len=10):
+    all_substrings = set()  # 使用集合来自动避免重复子串
     
-    random.shuffle(lines)  # shuffle the lines
+    with open(input_filename, "r", encoding="utf-8") as infile:
+        lines = infile.readlines()  # 读取所有行
+        random.shuffle(lines)  # 对行进行打乱
 
-    with open(OUTPUT_FILE, 'w') as outfile:
-        for line_number, line in enumerate(lines, 1):
-            line = line.strip()  # 移除行末的换行符
-            if len(line) != STRING_LENGTH:
-                print(f"警告: 第 {line_number} 行的字符串长度不是 {STRING_LENGTH}。跳过此行。")
-                continue
-            
-            substrings = get_random_substrings(line, existing_substrings)
-            for substring in substrings:
-                outfile.write(substring + '\n')
+        for line in lines:
+            # 对文件中的每一行（即每个字符串）进行切分
+            substrings = split_string(line, min_len, max_len)
+            all_substrings.update(substrings)
+    
+    # 将结果写入输出文件
+    with open(output_filename, "w", encoding="utf-8") as outfile:
+        for substring in all_substrings:
+            outfile.write(substring + "\n")
 
-    print(f"处理完成。结果已保存到 {OUTPUT_FILE}")
+# 示例使用
+input_filename = "/home/mao/workspace/PaddleOCR/test_data/corpus_Name.txt"  # 输入文件名
+output_filename = "/home/mao/workspace/PaddleOCR/test_data/split_corpus.txt"  # 输出文件名
+min_len = 1  # 用户自定义的最小子串长度
+max_len = 10  # 用户自定义的最大子串长度
 
-if __name__ == "__main__":
-    main()
+process_file(input_filename, output_filename, min_len, max_len)

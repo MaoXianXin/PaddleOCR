@@ -127,7 +127,7 @@ def calculate_accuracy(file1, file2):
 # 指定文件路径
 input_file = './output/rec/predicts_ppocrv3.txt'
 output_file = './output/rec/converted_results.txt'
-correct_file = './test_data/fixed_MRZ_sub_imgs/fixed_ocr_result.txt'
+correct_file = './test_data/fixed_MRZ_sub_imgs/fixed_ocr_result_converted.txt'
 
 # 转换预测结果
 convert_predictions(input_file, output_file)
