@@ -1,6 +1,13 @@
 import os
 
 def convert_predictions(input_file, output_file):
+    """
+    读取预测文件并转换格式后输出到新文件中。
+    
+    Args:
+    input_file (str): 输入文件路径。
+    output_file (str): 输出文件路径。
+    """
     # 读取predicts_ppocrv3.txt文件
     with open(input_file, 'r', encoding='utf-8') as file:
         lines = file.readlines()
@@ -11,8 +18,8 @@ def convert_predictions(input_file, output_file):
             # 去除行首尾的空格和换行符
             line = line.strip()
             
-            # 按空格分割每一行
-            parts = line.split()
+            # 按\t分割每一行
+            parts = line.split('\t')
             
             # 提取所需的信息
             image_path = parts[0]
@@ -22,14 +29,23 @@ def convert_predictions(input_file, output_file):
             image_name = os.path.basename(image_path)
             
             # 构建转换后的行
-            converted_line = f"{image_name},{ocr_result}#\n"
+            converted_line = f"{image_name}\t{ocr_result}\n"
             
             # 将转换后的行写入新文件
             output_file.write(converted_line)
 
-    print("转换完成。结果已保存在converted_results.txt文件中。")
+    print("转换完成。结果已保存在转换后的结果文件中。")
 
 def lcs(X, Y):
+    """
+    计算两个字符串的最长公共子序列 (LCS)。
+    
+    Args:
+    X, Y (str): 两个输入字符串。
+    
+    Returns:
+    str: 字符串X和Y的最长公共子序列。
+    """
     m = len(X)
     n = len(Y)
     
@@ -58,12 +74,22 @@ def lcs(X, Y):
     return ''.join(lcs)
 
 def calculate_accuracy(file1, file2):
+    """
+    计算两个文件的样本级和字符级准确率。
+    
+    Args:
+    file1 (str): 第一个输入文件路径。
+    file2 (str): 第二个输入文件路径。
+    
+    Returns:
+    tuple: 样本级准确率和字符级准确率。
+    """
     with open(file1, 'r') as f1, open(file2, 'r') as f2:
         lines1 = f1.readlines()
         lines2 = f2.readlines()
     
-    lines1_dict = {line.split(',')[0]: line.strip() for line in lines1}
-    lines2_dict = {line.split(',')[0]: line.strip() for line in lines2}
+    lines1_dict = {line.split('\t')[0]: line.strip() for line in lines1}
+    lines2_dict = {line.split('\t')[0]: line.strip() for line in lines2}
     
     total_samples = len(lines1_dict)
     correct_samples = 0
@@ -77,14 +103,11 @@ def calculate_accuracy(file1, file2):
         
         line2 = lines2_dict[image_name]
         try:
-            _, result1 = line1.split(',')
-            _, result2 = line2.split(',')
+            _, result1 = line1.split('\t')
+            _, result2 = line2.split('\t')
         except:
             print(line1)
             print(line2)
-        
-        result1 = result1.rstrip('#')
-        result2 = result2.rstrip('#')
         
         if result2 == 'delete':
             total_samples -= 1
@@ -104,7 +127,7 @@ def calculate_accuracy(file1, file2):
 # 指定文件路径
 input_file = './output/rec/predicts_ppocrv3.txt'
 output_file = './output/rec/converted_results.txt'
-correct_file = '/home/mao/workspace/PaddleOCR/test_data/fixed_MRZ_sub_imgs/fixed_ocr_result.txt'
+correct_file = './test_data/fixed_MRZ_sub_imgs/fixed_ocr_result.txt'
 
 # 转换预测结果
 convert_predictions(input_file, output_file)
