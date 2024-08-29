@@ -75,11 +75,11 @@ def lcs(X, Y):
 
 def calculate_accuracy(file1, file2):
     """
-    计算两个文件的样本级和字符级准确率。
+    计算两个文件的样本级和字符级准确率，并展示识别错误的样本对比。
     
     Args:
-    file1 (str): 第一个输入文件路径。
-    file2 (str): 第二个输入文件路径。
+    file1 (str): 第一个输入文件路径（预测结果）。
+    file2 (str): 第二个输入文件路径（正确结果）。
     
     Returns:
     tuple: 样本级准确率和字符级准确率。
@@ -96,6 +96,9 @@ def calculate_accuracy(file1, file2):
     total_chars = 0
     correct_chars = 0
     
+    print("识别错误的样本对比：")
+    print("--------------------")
+    
     for image_name, line1 in lines1_dict.items():
         if image_name not in lines2_dict:
             total_samples -= 1
@@ -106,8 +109,10 @@ def calculate_accuracy(file1, file2):
             _, result1 = line1.split('\t')
             _, result2 = line2.split('\t')
         except:
-            print(line1)
-            print(line2)
+            print(f"Error processing lines:")
+            print(f"Line 1: {line1}")
+            print(f"Line 2: {line2}")
+            continue
         
         if result2 == 'delete':
             total_samples -= 1
@@ -115,6 +120,11 @@ def calculate_accuracy(file1, file2):
         
         if result1 == result2:
             correct_samples += 1
+        else:
+            print(f"图片：{image_name}")
+            print(f"正确样本: {result2}")
+            print(f"预测样本: {result1}")
+            print("--------------------")
         
         total_chars += len(result2)
         correct_chars += len(lcs(result1, result2))
