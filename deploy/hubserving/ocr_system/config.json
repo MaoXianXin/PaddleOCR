@@ -9,7 +9,7 @@
             }
         }
     },
-    "port": 8868,
+    "port": 12342,
     "use_multiprocess": false,
     "workers": 2
 }
