@@ -41,3 +41,5 @@ error_samples/
 *.tar
 
 test_data/
+
+pretrain_models/
